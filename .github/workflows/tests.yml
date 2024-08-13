@@ -1,8 +1,9 @@
 name: Tests
 
 on:
-  - push
-  - pull_request
+  push:
+    branches: [master]
+  pull_request:
 
 jobs:
   tests:
@@ -27,7 +28,7 @@ jobs:
           - { python: "3.10", os: "macos-latest", session: "tests" }
           - { python: "3.10", os: "ubuntu-latest", session: "typeguard" }
           - { python: "3.10", os: "ubuntu-latest", session: "xdoctest" }
-          - { python: "3.10", os: "ubuntu-latest", session: "docs-build" }
+          - { python: "3.8", os: "ubuntu-latest", session: "docs-build" }
 
     env:
       NOXSESSION: ${{ matrix.session }}
@@ -45,7 +46,7 @@ jobs:
 
       - name: Upgrade pip
         run: |
-          pip install --constraint=.github/workflows/constraints.txt pip
+          pip install --constraint=${PWD}/.github/workflows/constraints.txt pip
           pip --version
 
       - name: Upgrade pip in virtual environments
@@ -59,13 +60,13 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
+          pipx install --pip-args=--constraint=${PWD}/.github/workflows/constraints.txt poetry
           poetry --version
 
       - name: Install Nox
         run: |
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt nox
-          pipx inject --pip-args=--constraint=.github/workflows/constraints.txt nox nox-poetry
+          pipx install --pip-args=--constraint=${PWD}/.github/workflows/constraints.txt nox
+          pipx inject --pip-args=--constraint=${PWD}/.github/workflows/constraints.txt nox nox-poetry
           nox --version
 
       - name: Install ghostscript
@@ -73,6 +74,13 @@ jobs:
         run: |
           sudo apt update
           sudo apt install ghostscript
+
+      - name: Install ghostscript (macos-latest)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install ghostscript
+          mkdir -p ~/lib
+          ln -s "$(brew --prefix gs)/lib/libgs.dylib" ~/lib
 
       - name: Compute pre-commit cache key
         if: matrix.session == 'pre-commit'
@@ -130,18 +138,18 @@ jobs:
 
       - name: Upgrade pip
         run: |
-          pip install --constraint=.github/workflows/constraints.txt pip
+          pip install --constraint=${PWD}/.github/workflows/constraints.txt pip
           pip --version
 
       - name: Install Poetry
         run: |
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
+          pipx install --pip-args=--constraint=${PWD}/.github/workflows/constraints.txt poetry
           poetry --version
 
       - name: Install Nox
         run: |
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt nox
-          pipx inject --pip-args=--constraint=.github/workflows/constraints.txt nox nox-poetry
+          pipx install --pip-args=--constraint=${PWD}/.github/workflows/constraints.txt nox
+          pipx inject --pip-args=--constraint=${PWD}/.github/workflows/constraints.txt nox nox-poetry
           nox --version
 
       - name: Download coverage data
