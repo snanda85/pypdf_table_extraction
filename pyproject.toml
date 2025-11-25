@@ -33,7 +33,7 @@ openpyxl = "^3.1.0"
 pdfminer-six = "^20240706"
 pypdf = [
     {version = "^3.17", python = ">=3.8,<3.12"},
-    {version = ">=4.0,<6.0", python = ">=3.12"}
+    {version = ">=4.0,<7.0", python = ">=3.12"}
 ]
 pandas = [
     {version = "^1.5.3", python = ">=3.8,<3.10"},
@@ -70,13 +70,16 @@ typeguard = ">=2.13.3"
 xdoctest = {extras = ["colors"], version = ">=0.15.10"}
 myst-parser = {version = ">=2.0.0"}
 
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8"
+
 [tool.poetry.scripts]
 camelot = "camelot.__main__:main"
 pypdf_table_extraction = "pypdf_table_extraction.__main__:main"
 
 [tool.poetry.group.base.dependencies]
-opencv-python-headless = "^4.7.0.68"
-pypdfium2 = "^4"
+opencv-python-headless = ">=4.0,<5.0"
+pypdfium2 = "^5"
 
 [tool.poetry.group.plot]
 optional = true
